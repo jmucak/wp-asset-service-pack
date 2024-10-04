@@ -1,0 +1,19 @@
+{
+  "name": "jmucak/wp-asset-service-pack",
+  "description": "Asset service helper",
+  "require": {
+    "php": ">=8.0"
+  },
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Josip Mucak"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "jmucak\\wpAssetServicePack\\": "src"
+    }
+  }
+}
