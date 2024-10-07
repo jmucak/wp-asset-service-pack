@@ -5,7 +5,6 @@ namespace jmucak\wpAssetServicePack;
 class AssetService {
 	private string $base_url = '';
 	private string $base_path = '';
-	private array $assets = array();
 
 	public function __construct( array $config ) {
 		$this->base_path = $config['base_path'];
@@ -20,33 +19,36 @@ class AssetService {
 		return $this->base_path . $path;
 	}
 
-	public function register_site_assets(array $assets) : void {
-		$this->assets = $assets;
-		add_action( 'wp_enqueue_scripts', array( $this, 'register' ) );
+	public function register_site_assets( array $assets ): void {
+		add_action( 'wp_enqueue_scripts', function () use ( $assets ) {
+			$this->register( $assets );
+		} );
 	}
 
-	public function register_editor_assets(array $assets) : void {
-		$this->assets = $assets;
-		add_action( 'enqueue_block_editor_assets', array( $this, 'register' ) );
+	public function register_editor_assets( array $assets ): void {
+		add_action( 'enqueue_block_editor_assets', function () use ( $assets ) {
+			$this->register( $assets );
+		} );
 	}
 
-	public function register_admin_assets(array $assets) : void {
-		$this->assets = $assets;
-		add_action( 'admin_enqueue_scripts', array( $this, 'register' ) );
+	public function register_admin_assets( array $assets ): void {
+		add_action( 'admin_enqueue_scripts', function () use ( $assets ) {
+			$this->register( $assets );
+		} );
 	}
 
-	public function register(): void {
-		if ( ! empty( $this->assets['js'] ) ) {
-			$this->enqueue_scripts();
+	public function register( array $assets ): void {
+		if ( ! empty( $assets['js'] ) ) {
+			$this->enqueue_scripts( $assets['js'] );
 		}
 
-		if ( ! empty( $this->assets['css'] ) ) {
-			$this->enqueue_styles();
+		if ( ! empty( $assets['css'] ) ) {
+			$this->enqueue_styles( $assets['css'] );
 		}
 	}
 
-	private function enqueue_scripts(): void {
-		foreach ( $this->assets['js'] as $handle => $data ) {
+	private function enqueue_scripts( array $assets ): void {
+		foreach ( $assets as $handle => $data ) {
 			if ( empty( $data['path'] ) ) {
 				continue;
 			}
@@ -70,8 +72,8 @@ class AssetService {
 		}
 	}
 
-	private function enqueue_styles(): void {
-		foreach ( $this->assets['css'] as $handle => $data ) {
+	private function enqueue_styles( array $assets ): void {
+		foreach ( $assets as $handle => $data ) {
 			if ( empty( $data['path'] ) ) {
 				continue;
 			}
